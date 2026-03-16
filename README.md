@@ -1,4 +1,4 @@
-# GrantsSurveyor v2
+# GrantsSurveyor
 
 **Banco de trabajo de investigación sobre datos públicos**
 
