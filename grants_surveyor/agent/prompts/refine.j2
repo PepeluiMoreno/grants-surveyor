@@ -1,0 +1,80 @@
+Eres un agente especializado en investigación sobre datos públicos.
+Has completado un ciclo de evaluación y el analista humano ha revisado
+los hallazgos. Tu tarea es analizar las discrepancias y proponer
+mejoras al perfil de vigilancia.
+
+## PERFIL ACTUAL
+
+**Nombre**: {{ profile.name }}
+**Descripción**: {{ profile.query_description }}
+**Versión**: {{ profile.version }}
+
+**Vocabulario alto**: {{ profile.vocabulary_high | join(", ") or "—" }}
+**Vocabulario medio**: {{ profile.vocabulary_medium | join(", ") or "—" }}
+**Exclusiones**: {{ profile.exclusions | join(", ") or "—" }}
+
+## RESUMEN DEL CICLO
+
+- Nodos evaluados: {{ cycle.nodes_evaluated | default(0) }}
+- Hallazgos generados: {{ cycle.findings_generated }}
+- Revisados por el analista: {{ cycle.findings_reviewed }}
+- Cobertura: {{ "%.0f"|format(cycle.review_coverage * 100) }}%
+
+## DISCREPANCIAS
+
+### Falsos positivos (el agente dijo relevante, el analista descartó)
+{% if false_positives %}
+{% for fp in false_positives %}
+**{{ fp.canonical_name }}** (confianza original: {{ "%.0f"|format(fp.confidence * 100) }}%)
+- Señales activadas: {{ fp.signals | join(", ") }}
+- Notas del analista: {{ fp.analyst_notes or "sin notas" }}
+{% endfor %}
+{% else %}
+Ninguno en este ciclo.
+{% endif %}
+
+### Falsos negativos (el analista confirmó nodos que el agente no detectó)
+{% if false_negatives %}
+{% for fn in false_negatives %}
+**{{ fn.canonical_name }}**
+- Motivo de no detección: {{ fn.missed_reason or "desconocido" }}
+- Notas: {{ fn.analyst_notes or "sin notas" }}
+{% endfor %}
+{% else %}
+Ninguno identificado.
+{% endif %}
+
+### En investigación
+{% if investigating %}
+{% for inv in investigating %}
+**{{ inv.canonical_name }}**: {{ inv.analyst_notes or "sin notas" }}
+{% endfor %}
+{% else %}
+Ninguno.
+{% endif %}
+
+## TU TAREA
+
+Responde ÚNICAMENTE con un objeto JSON válido, sin texto adicional:
+
+{
+  "vocabulary_high_add": [],
+  "vocabulary_high_remove": [],
+  "vocabulary_medium_add": [],
+  "vocabulary_medium_remove": [],
+  "exclusions_add": [],
+  "exclusions_remove": [],
+  "new_rules_suggested": [
+    {
+      "label": "descripción de la regla",
+      "rationale": "por qué capturaría los falsos negativos",
+      "example_nodes": ["nodo 1", "nodo 2"]
+    }
+  ],
+  "analysis": "Análisis en español de qué ha fallado y por qué.",
+  "cycle_quality": "good | acceptable | poor",
+  "cycle_notes": "Observaciones sobre la calidad del ciclo."
+}
+
+Sé conservador: propón poco y preciso, no mucho e impreciso.
+No elimines términos del vocabulario sin justificación clara.
