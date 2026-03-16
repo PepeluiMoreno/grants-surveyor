@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Database — nunca commitear datos reales
+data/*.db
+data/snapshots/*.json
+data/snapshots/*.csv
+data/cycles/*.jsonl
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Agent exports — nunca commitear con datos reales
+*.gsagent
+
+# Logs
+*.log
